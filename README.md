@@ -86,11 +86,304 @@ app/
 To make this production-ready:
 
 1. ~~**Connect Waitlist Form**~~ ✅ - Waitlist signup functionality implemented (see [WAITLIST_STORAGE.md](./WAITLIST_STORAGE.md))
-2. **Add Analytics** - Track conversion metrics (hero CTA clicks, waitlist signups, scroll depth)
+2. ~~**Add Analytics**~~ ✅ - Analytics tracking implemented (see [ANALYTICS.md](./ANALYTICS.md))
 3. **SEO Optimization** - Add Open Graph tags, structured data, and optimize meta descriptions
 4. **Performance** - Optimize images, implement lazy loading, and ensure <1.5s load time
 5. **A/B Testing** - Test different headlines, CTAs, and layouts
-6. **Accessibility** - Add ARIA labels, ensure keyboard navigation, and test with screen readers
+6. ~~**Accessibility**~~ ✅ - Accessibility improvements implemented (see [ACCESSIBILITY.md](./ACCESSIBILITY.md))
+
+## 🚢 Building & Deployment
+
+### Local Build
+
+To build the project locally and test the production build:
+
+```bash
+# Install dependencies
+bun install
+# or
+npm install
+
+# Build for production
+bun run build
+# or
+npm run build
+
+# Start production server
+bun start
+# or
+npm start
+```
+
+The production build will be in the `.next` directory. The server will run on `http://localhost:3000` by default.
+
+### Build Requirements
+
+- **Node.js**: 18.x or higher (20.x recommended)
+- **Package Manager**: Bun (recommended) or npm
+- **Build Output**: Static and server-rendered pages in `.next` directory
+
+### Deployment Options
+
+#### Vercel (Recommended)
+
+Vercel is the recommended platform for Next.js applications:
+
+1. **Connect Repository**:
+   - Push your code to GitHub
+   - Import project in [Vercel Dashboard](https://vercel.com/new)
+   - Vercel will auto-detect Next.js settings
+
+2. **Build Settings** (auto-configured):
+   - Build Command: `next build`
+   - Output Directory: `.next`
+   - Install Command: `bun install` or `npm install`
+
+3. **Environment Variables** (if needed):
+   - Add in Vercel Dashboard → Settings → Environment Variables
+
+4. **Deploy**:
+   - Every push to `main` branch triggers automatic deployment
+   - Preview deployments created for pull requests
+
+**Vercel CLI** (alternative):
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+#### Netlify
+
+1. **Connect Repository**:
+   - Push to GitHub
+   - Import in [Netlify Dashboard](https://app.netlify.com)
+
+2. **Build Settings**:
+   - Build command: `npm run build` or `bun run build`
+   - Publish directory: `.next`
+   - Framework preset: Next.js
+
+3. **Netlify Configuration** (`netlify.toml`):
+```toml
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+```
+
+#### Self-Hosted (Docker)
+
+Create a `Dockerfile`:
+
+```dockerfile
+FROM node:20-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+COPY package.json bun.lock* ./
+RUN npm install || bun install
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN npm run build || bun run build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD ["node", "server.js"]
+```
+
+Build and run:
+```bash
+docker build -t ai-coach-starter .
+docker run -p 3000:3000 ai-coach-starter
+```
+
+### CI/CD Setup
+
+#### GitHub Actions
+
+Create `.github/workflows/deploy.yml`:
+
+```yaml
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      
+      - name: Install dependencies
+        run: bun install
+      
+      - name: Run linter
+        run: bun run lint
+      
+      - name: Build project
+        run: bun run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: .next
+          retention-days: 1
+```
+
+#### GitLab CI
+
+Create `.gitlab-ci.yml`:
+
+```yaml
+image: node:20
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - npm install
+    - npm run lint
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+    expire_in: 1 hour
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploy to your hosting platform"
+  only:
+    - main
+```
+
+### Reproducing the Live Build
+
+To reproduce the exact build that's deployed:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/nfdevs/ai-starter-test.git
+   cd ai-starter-test
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   bun install
+   # or
+   npm install
+   ```
+
+3. **Build for production**:
+   ```bash
+   bun run build
+   # or
+   npm run build
+   ```
+
+4. **Start production server**:
+   ```bash
+   bun start
+   # or
+   npm start
+   ```
+
+5. **Verify build**:
+   - Open `http://localhost:3000`
+   - Check that all features work (waitlist form, analytics, etc.)
+   - Verify build output in `.next` directory
+
+### Environment Variables
+
+Currently, no environment variables are required. If you need to add them:
+
+1. Create `.env.local` for local development:
+   ```bash
+   # .env.local
+   NEXT_PUBLIC_API_URL=http://localhost:3000
+   ```
+
+2. Add to deployment platform (Vercel/Netlify):
+   - Set in platform dashboard
+   - Never commit `.env.local` to git
+
+### Build Output
+
+The build process creates:
+- `.next/` - Compiled Next.js application
+- `.next/static/` - Static assets (CSS, JS, images)
+- `.next/server/` - Server-side code
+
+### Troubleshooting
+
+**Build fails:**
+- Ensure Node.js 18+ is installed
+- Clear `.next` directory: `rm -rf .next`
+- Clear node_modules: `rm -rf node_modules && bun install`
+
+**Port already in use:**
+- Change port: `PORT=3001 bun start`
+- Or kill process using port 3000
+
+**Type errors:**
+- Run type check: `npx tsc --noEmit`
+- Ensure all dependencies are installed
+
+### Performance Optimization
+
+Before deploying, ensure:
+- ✅ Build completes without errors
+- ✅ No console errors in production build
+- ✅ Lighthouse score > 90 for performance
+- ✅ All images optimized (if added)
+- ✅ Fonts loading correctly
 
 ## 🎨 Design Principles
 
