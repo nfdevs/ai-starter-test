@@ -1,3 +1,5 @@
+import WaitlistForm from './components/WaitlistForm';
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a]">
@@ -273,12 +275,7 @@ export default function Home() {
             Ready for a calmer way to move forward?
           </h2>
           <div className="mt-8">
-            <a
-              href="#waitlist"
-              className="inline-flex items-center justify-center rounded-full bg-[#4a90e2] px-8 py-4 text-base font-medium text-white transition-colors hover:bg-[#3a7bc8] focus:outline-none focus:ring-2 focus:ring-[#4a90e2] focus:ring-offset-2"
-            >
-              Join the Waitlist
-            </a>
+            <WaitlistForm source="final-cta" />
           </div>
           <p className="mt-4 text-sm text-[#6b7280]">
             No spam. Leave anytime.
