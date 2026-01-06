@@ -2,6 +2,12 @@
 
 A conversion-focused landing page for an AI-powered personal coaching application. Built with Next.js 16, React 19, and Tailwind CSS v4.
 
+## 🌐 Live Site
+
+**View the live site:** [https://github.com/nfdevs/ai-starter-test](https://github.com/nfdevs/ai-starter-test)
+
+> **Note:** Update your GitHub repository description to: "A conversion-focused landing page for an AI-powered personal coaching application. Live: https://github.com/nfdevs/ai-starter-test"
+
 ## 🎯 Project Overview
 
 This landing page is designed to convert visitors into waitlist signups for an AI personal coach that helps users turn clarity into consistent action. The design emphasizes calm, trust, and clarity—avoiding overwhelming AI aesthetics in favor of a human-centered coaching experience.
@@ -79,7 +85,7 @@ app/
 
 To make this production-ready:
 
-1. **Connect Waitlist Form** - Replace anchor links with actual waitlist signup functionality
+1. ~~**Connect Waitlist Form**~~ ✅ - Waitlist signup functionality implemented (see [WAITLIST_STORAGE.md](./WAITLIST_STORAGE.md))
 2. **Add Analytics** - Track conversion metrics (hero CTA clicks, waitlist signups, scroll depth)
 3. **SEO Optimization** - Add Open Graph tags, structured data, and optimize meta descriptions
 4. **Performance** - Optimize images, implement lazy loading, and ensure <1.5s load time
