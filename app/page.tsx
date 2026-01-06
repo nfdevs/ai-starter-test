@@ -1,8 +1,11 @@
 import WaitlistForm from './components/WaitlistForm';
+import HeroCtaButton from './components/HeroCtaButton';
+import AnalyticsTracker from './components/AnalyticsTracker';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a]">
+      <AnalyticsTracker />
       {/* Hero Section */}
       <section className="relative mx-auto max-w-6xl px-4 pt-20 pb-16 sm:px-6 sm:pt-32 sm:pb-24 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
@@ -16,12 +19,13 @@ export default function Home() {
             Reflect • Decide • Act — with a coach that remembers what matters to you
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <a
+            <HeroCtaButton
               href="#waitlist"
+              source="hero"
               className="inline-flex items-center justify-center rounded-full bg-[#4a90e2] px-8 py-4 text-base font-medium text-white transition-colors hover:bg-[#3a7bc8] focus:outline-none focus:ring-2 focus:ring-[#4a90e2] focus:ring-offset-2"
             >
               Join the Early Access Waitlist
-            </a>
+            </HeroCtaButton>
             <a
               href="#how-it-works"
               className="inline-flex items-center justify-center rounded-full border border-[#d1d5db] bg-white px-8 py-4 text-base font-medium text-[#1a1a1a] transition-colors hover:bg-[#f9fafb] focus:outline-none focus:ring-2 focus:ring-[#4a90e2] focus:ring-offset-2"

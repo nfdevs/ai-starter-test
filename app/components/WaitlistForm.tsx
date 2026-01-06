@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { trackWaitlistSignup } from '../lib/analytics';
 
 interface WaitlistFormProps {
   source?: string;
@@ -32,6 +33,8 @@ export default function WaitlistForm({ source = 'page', className = '' }: Waitli
         setStatus('success');
         setMessage('Thanks! You\'re on the waitlist.');
         setEmail('');
+        // Track conversion
+        trackWaitlistSignup(source);
       } else {
         setStatus('error');
         setMessage(data.error || 'Something went wrong. Please try again.');
