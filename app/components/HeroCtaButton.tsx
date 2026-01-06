@@ -24,6 +24,7 @@ export default function HeroCtaButton({
       href={href}
       onClick={handleClick}
       className={className}
+      aria-label={source === 'hero' ? 'Join the early access waitlist' : 'Join the waitlist'}
     >
       {children}
     </a>
